@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth.js";
 import groupRoutes from "./routes/groups.js";
 import postRoutes from "./routes/posts.js";
 
+import commentRoutes from "./routes/comments.js";
+
 dotenv.config();
 
 const app = express();
@@ -20,6 +22,7 @@ app.get("/api/ping", (req, res) => {
 app.use("/api/groups", groupRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 
