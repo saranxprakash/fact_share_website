@@ -1,0 +1,72 @@
+.post-detail {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+.post-detail-back {
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.post-detail-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.post-detail-byline {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.post-detail-title {
+  font-size: 24px;
+  margin: 0 0 16px;
+  line-height: 1.3;
+}
+
+.post-detail-image {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.post-detail-body {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+}
+
+.post-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.post-detail-vote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 4px 12px;
+  background: none;
+}
+
+.post-detail-reasoning {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 10px 0 0;
+}

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/client";
-import VerdictStamp from "../components/VerdictStamp";
-import CommentSection from "../components/CommentSection";
 import ImageUpload from "../components/ImageUpload";
 import "./FeedPage.css";
 
@@ -15,6 +13,7 @@ export default function FeedPage() {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
+  const [showComposer, setShowComposer] = useState(false);
   const userId = localStorage.getItem("userId");
 
   async function loadGroup() {
@@ -52,27 +51,24 @@ export default function FeedPage() {
       setTitle("");
       setContent("");
       setImageUrl("");
+      setShowComposer(false);
       loadPosts();
     } catch (err) {
       setError(err.response?.data?.error || "Couldn't post that. Try again.");
     }
   }
 
-  async function handleUpvote(postId) {
+  async function handleUpvote(e, postId) {
+    e.preventDefault();
+    e.stopPropagation();
     await api.post(`/posts/${postId}/upvote`);
-    loadPosts();
-  }
-
-  async function handleDeletePost(postId) {
-    if (!confirm("Delete this post? This can't be undone.")) return;
-    await api.delete(`/posts/${postId}`);
     loadPosts();
   }
 
   const isMember = group?.members?.includes(userId);
 
   return (
-    <div className="feed-page">
+    <div className="feed-page page-fade">
       <div className="feed-header">
         <div>
           <Link to="/groups" className="feed-subtitle">
@@ -80,14 +76,32 @@ export default function FeedPage() {
           </Link>
           <h1 className="feed-title">{group?.name || "Loading…"}</h1>
         </div>
-        {isMember && (
-          <button className="post-action-btn" onClick={handleLeave}>
-            Leave community
-          </button>
-        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          {isMember && (
+            <button
+              className="sort-toggle button"
+              style={{
+                borderRadius: 16,
+                border: "1px solid var(--rule)",
+                background: "var(--paper)",
+                padding: "6px 14px",
+                fontSize: 13,
+              }}
+              onClick={() => setShowComposer(!showComposer)}
+            >
+              {showComposer ? "Cancel" : "+ New article"}
+            </button>
+          )}
+        </div>
       </div>
 
-      {isMember ? (
+      {!isMember && (
+        <p className="feed-empty">
+          Join this community to post. Head back to Communities to join.
+        </p>
+      )}
+
+      {isMember && showComposer && (
         <form className="composer" onSubmit={handleSubmit}>
           <input
             placeholder="Headline"
@@ -112,10 +126,6 @@ export default function FeedPage() {
             Publish
           </button>
         </form>
-      ) : (
-        <p className="feed-empty">
-          Join this community to post. Head back to Communities to join.
-        </p>
       )}
 
       <div className="sort-toggle">
@@ -135,16 +145,20 @@ export default function FeedPage() {
 
       {posts.length === 0 && (
         <p className="feed-empty">
-          No dispatches yet. Be the first to file one.
+          No articles yet. Be the first to publish one.
         </p>
       )}
 
       {posts.map((post) => (
-        <div className="post-row" key={post._id}>
+        <Link
+          className="post-row"
+          key={post._id}
+          to={`/feed/${groupId}/post/${post._id}`}
+        >
           <div className="vote-col">
             <button
               className="vote-arrow"
-              onClick={() => handleUpvote(post._id)}
+              onClick={(e) => handleUpvote(e, post._id)}
               aria-label="Upvote"
             >
               ▲
@@ -152,37 +166,12 @@ export default function FeedPage() {
             <span className="vote-count">{post.upvotes?.length || 0}</span>
           </div>
 
-          <div className="post-main">
-            <p className="post-byline">
-              {post.author?.username || "unknown"} ·{" "}
-              {new Date(post.createdAt).toLocaleDateString()}
-            </p>
-            <h2 className="post-title">{post.title}</h2>
-            <p className="post-body">{post.content}</p>
-
-            <div className="post-footer">
-              <VerdictStamp status={post.verdict?.status} />
-              {post.author?._id === userId && (
-                <button
-                  className="post-action-btn"
-                  onClick={() => handleDeletePost(post._id)}
-                >
-                  Delete
-                </button>
-              )}
-            </div>
-
-            {post.verdict?.reasoning && (
-              <p className="post-reasoning">{post.verdict.reasoning}</p>
-            )}
-
-            <CommentSection postId={post._id} currentUserId={userId} />
-          </div>
+          <h2 className="post-title">{post.title}</h2>
 
           {post.imageUrl && (
             <img src={post.imageUrl} alt="" className="post-thumb" />
           )}
-        </div>
+        </Link>
       ))}
     </div>
   );

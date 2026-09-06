@@ -1,20 +1,14 @@
 .stamp {
   display: inline-block;
-  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.08em;
   padding: 3px 10px;
-  border: 1.5px solid currentColor;
-  border-radius: 2px;
-  transform: rotate(-3deg);
+  border-radius: 12px;
 }
 
 .stamp--pending {
   color: var(--pending);
   background: var(--pending-bg);
-  border-style: dashed;
-  transform: none;
 }
 
 .stamp--verified {
@@ -33,16 +27,14 @@
 }
 
 .stamp--land {
-  animation: stamp-land 0.28s ease-out;
+  animation: stamp-fade-in 0.2s ease-out;
 }
 
-@keyframes stamp-land {
+@keyframes stamp-fade-in {
   from {
     opacity: 0;
-    transform: rotate(-3deg) scale(1.6);
   }
   to {
     opacity: 1;
-    transform: rotate(-3deg) scale(1);
   }
 }

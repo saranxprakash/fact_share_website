@@ -1,25 +1,22 @@
 .feed-page {
   max-width: 700px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 24px 20px 80px;
 }
 
 .feed-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 2px solid var(--ink);
-  padding-bottom: 14px;
-  margin-bottom: 24px;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .feed-title {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .feed-subtitle {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-soft);
   text-decoration: none;
   display: block;
@@ -27,67 +24,78 @@
 }
 
 .composer {
-  background: var(--paper-raised);
+  background: var(--paper);
   border: 1px solid var(--rule);
-  padding: 18px;
-  margin-bottom: 28px;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
 }
 
 .composer input,
 .composer textarea {
   width: 100%;
-  border: none;
-  border-bottom: 1px solid var(--rule);
-  background: transparent;
-  padding: 8px 2px;
-  margin-bottom: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+  padding: 8px 10px;
+  margin-bottom: 10px;
   color: var(--ink);
   resize: vertical;
 }
 
 .composer input:focus,
 .composer textarea:focus {
-  border-bottom-color: var(--ink);
+  border-color: var(--stamp-red);
+  outline: none;
 }
 
 .composer-submit {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--stamp-red);
+  color: white;
   border: none;
-  padding: 9px 20px;
+  border-radius: 16px;
+  padding: 8px 20px;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .sort-toggle {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .sort-toggle button {
-  font-family: var(--font-mono);
   font-size: 12px;
   padding: 5px 12px;
+  border-radius: 14px;
   border: 1px solid var(--rule);
-  background: none;
+  background: var(--paper);
   color: var(--ink-soft);
 }
 
 .sort-toggle button.active {
   border-color: var(--ink);
   color: var(--ink);
-  background: var(--paper-raised);
+  font-weight: 500;
 }
 
 .post-row {
   display: flex;
+  align-items: center;
   gap: 14px;
-  padding: 16px 8px;
-  border-bottom: 1px solid var(--rule);
+  padding: 16px 14px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .post-row:hover {
-  background: var(--paper-raised);
+  border-color: var(--ink-soft);
 }
 
 .vote-col {
@@ -95,18 +103,17 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  width: 32px;
+  width: 30px;
   flex-shrink: 0;
-  padding-top: 2px;
 }
 
 .vote-arrow {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1;
   color: var(--ink-soft);
-  padding: 2px;
+  padding: 3px;
 }
 
 .vote-arrow:hover {
@@ -114,73 +121,34 @@
 }
 
 .vote-count {
-  font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 500;
   color: var(--ink);
 }
 
-.post-main {
+.post-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
   flex: 1;
   min-width: 0;
 }
 
-.post-byline {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-soft);
-  margin: 0 0 4px;
-}
-
-.post-title {
-  font-size: 16px;
-  margin: 0 0 6px;
-  line-height: 1.3;
-}
-
-.post-body {
-  font-size: 14px;
-  color: #2b2a24;
-  margin: 0 0 10px;
-}
-
-.post-footer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.post-reasoning {
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin: 8px 0 0;
-}
-
 .post-thumb {
-  width: 84px;
-  height: 84px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
-  border: 1px solid var(--rule);
-}
-
-.post-action-btn {
-  background: none;
-  border: 1px solid var(--rule);
-  padding: 3px 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink);
-}
-
-.post-action-btn:hover {
-  border-color: var(--ink);
 }
 
 .feed-empty {
-  font-family: var(--font-mono);
   font-size: 13px;
   color: var(--ink-soft);
   padding: 20px 8px;
+}
+
+.auth-error {
+  color: var(--stamp-red);
+  font-size: 13px;
 }
