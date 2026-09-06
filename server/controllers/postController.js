@@ -1,5 +1,6 @@
 import Post from "../models/Post.js";
 import Group from "../models/Group.js";
+import Comment from "../models/Comment.js";
 import { runFactCheck } from "../services/factCheck.js";
 
 export async function listPosts(req, res) {
@@ -12,8 +13,6 @@ export async function listPosts(req, res) {
     .populate("author", "username")
     .limit(50);
 
-  // Sort in JS since "most upvoted" depends on an array's length,
-  // which MongoDB can't sort by directly without a more complex aggregation.
   if (sort === "top") {
     posts = posts.sort((a, b) => b.upvotes.length - a.upvotes.length);
   } else {
@@ -83,4 +82,21 @@ export async function upvotePost(req, res) {
   }
   await post.save();
   res.json({ upvoteCount: post.upvotes.length });
+}
+
+export async function deletePost(req, res) {
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found" });
+
+  if (post.author.toString() !== req.userId) {
+    return res
+      .status(403)
+      .json({ error: "You can only delete your own posts" });
+  }
+
+  // Clean up the post's comments too, so they don't become orphaned data
+  await Comment.deleteMany({ post: post._id });
+  await post.deleteOne();
+
+  res.json({ success: true });
 }
