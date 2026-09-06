@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import api from "../api/client";
 import VerdictStamp from "../components/VerdictStamp";
+import CommentSection from "../components/CommentSection";
 import "./FeedPage.css";
 
 export default function FeedPage() {
@@ -58,6 +59,12 @@ export default function FeedPage() {
 
   async function handleUpvote(postId) {
     await api.post(`/posts/${postId}/upvote`);
+    loadPosts();
+  }
+
+  async function handleDeletePost(postId) {
+    if (!confirm("Delete this post? This can't be undone.")) return;
+    await api.delete(`/posts/${postId}`);
     loadPosts();
   }
 
@@ -154,11 +161,21 @@ export default function FeedPage() {
             >
               ▲ {post.upvotes?.length || 0}
             </button>
+            {post.author?._id === userId && (
+              <button
+                className="upvote-btn"
+                onClick={() => handleDeletePost(post._id)}
+              >
+                Delete
+              </button>
+            )}
           </div>
 
           {post.verdict?.reasoning && (
             <p className="dispatch-reasoning">{post.verdict.reasoning}</p>
           )}
+
+          <CommentSection postId={post._id} currentUserId={userId} />
         </article>
       ))}
     </div>

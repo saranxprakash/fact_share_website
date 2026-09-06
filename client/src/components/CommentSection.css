@@ -1,0 +1,81 @@
+.comments {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+}
+
+.comments-toggle {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 0;
+  text-decoration: underline;
+}
+
+.comment-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-item {
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.comment-byline {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin: 0 0 2px;
+}
+
+.comment-text {
+  margin: 0;
+  color: #2b2a24;
+}
+
+.comment-delete {
+  background: none;
+  border: none;
+  color: var(--stamp-red);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0;
+  flex-shrink: 0;
+  text-decoration: underline;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-form input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  padding: 6px 2px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.comment-form input:focus {
+  border-bottom-color: var(--ink);
+}
+
+.comment-form button {
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+}
