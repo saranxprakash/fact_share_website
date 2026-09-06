@@ -1,6 +1,6 @@
-// Calls Google's Gemini API to fact-check a post's content and returns a structured verdict.
-// This runs AFTER the post is already saved, so it must never block the request.
 export async function runFactCheck(title, content) {
+  console.log("[factCheck] starting for:", title);
+
   const prompt = `You are a fact-checking assistant. Evaluate the following claim for factual accuracy.
 
 Title: ${title}
@@ -14,30 +14,44 @@ Respond with ONLY a JSON object in this exact shape, no other text, no markdown 
   "sources": ["short description of source 1", "short description of source 2"]
 }`;
 
-  const model = "gemini-3.6-flash";
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": process.env.GEMINI_API_KEY,
-    },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-    }),
-  });
+  try {
+    console.log("[factCheck] sending request to Groq...");
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(
-      `Fact-check API call failed: ${response.status} ${errText}`,
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-oss-120b",
+          messages: [{ role: "user", content: prompt }],
+        }),
+        signal: controller.signal,
+      },
     );
+
+    console.log("[factCheck] got a response, status:", response.status);
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(
+        `Fact-check API call failed: ${response.status} ${errText}`,
+      );
+    }
+
+    const data = await response.json();
+    const rawText = data.choices[0].message.content;
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+
+    console.log("[factCheck] parsed successfully");
+    return JSON.parse(cleaned);
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  const data = await response.json();
-  const rawText = data.candidates[0].content.parts[0].text;
-  const cleaned = rawText.replace(/```json|```/g, "").trim();
-
-  return JSON.parse(cleaned);
 }
