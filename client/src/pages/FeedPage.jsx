@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import api from "../api/client";
 import VerdictStamp from "../components/VerdictStamp";
 import CommentSection from "../components/CommentSection";
+import ImageUpload from "../components/ImageUpload";
 import "./FeedPage.css";
 
 export default function FeedPage() {
@@ -12,6 +13,7 @@ export default function FeedPage() {
   const [sort, setSort] = useState("new");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
   const userId = localStorage.getItem("userId");
 
@@ -46,9 +48,10 @@ export default function FeedPage() {
     e.preventDefault();
     setError("");
     try {
-      await api.post("/posts", { title, content, group: groupId });
+      await api.post("/posts", { title, content, imageUrl, group: groupId });
       setTitle("");
       setContent("");
+      setImageUrl("");
       loadPosts();
     } catch (err) {
       setError(err.response?.data?.error || "Couldn't post that. Try again.");
@@ -78,25 +81,10 @@ export default function FeedPage() {
           <h1 className="feed-title">{group?.name || "Loading…"}</h1>
         </div>
         {isMember && (
-          <button className="upvote-btn" onClick={handleLeave}>
+          <button className="post-action-btn" onClick={handleLeave}>
             Leave community
           </button>
         )}
-      </div>
-
-      <div className="sort-toggle">
-        <button
-          className={sort === "new" ? "active" : ""}
-          onClick={() => handleSortChange("new")}
-        >
-          Newest
-        </button>
-        <button
-          className={sort === "top" ? "active" : ""}
-          onClick={() => handleSortChange("top")}
-        >
-          Top
-        </button>
       </div>
 
       {isMember ? (
@@ -108,15 +96,20 @@ export default function FeedPage() {
             required
           />
           <textarea
-            placeholder="What's the claim?"
+            placeholder="Write your article..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            rows={3}
+            rows={5}
             required
+          />
+          <ImageUpload
+            imageUrl={imageUrl}
+            onUploaded={setImageUrl}
+            onRemove={() => setImageUrl("")}
           />
           {error && <p className="auth-error">{error}</p>}
           <button type="submit" className="composer-submit">
-            Send to the wire
+            Publish
           </button>
         </form>
       ) : (
@@ -125,6 +118,21 @@ export default function FeedPage() {
         </p>
       )}
 
+      <div className="sort-toggle">
+        <button
+          className={sort === "new" ? "active" : ""}
+          onClick={() => handleSortChange("new")}
+        >
+          New
+        </button>
+        <button
+          className={sort === "top" ? "active" : ""}
+          onClick={() => handleSortChange("top")}
+        >
+          Top
+        </button>
+      </div>
+
       {posts.length === 0 && (
         <p className="feed-empty">
           No dispatches yet. Be the first to file one.
@@ -132,38 +140,49 @@ export default function FeedPage() {
       )}
 
       {posts.map((post) => (
-        <article className="dispatch" key={post._id}>
-          <p className="dispatch-byline">
-            {post.author?.username || "unknown"} · filed{" "}
-            {new Date(post.createdAt).toLocaleDateString()}
-          </p>
-          <h2 className="dispatch-title">{post.title}</h2>
-          <p className="dispatch-body">{post.content}</p>
-
-          <div className="dispatch-footer">
-            <VerdictStamp status={post.verdict?.status} />
+        <div className="post-row" key={post._id}>
+          <div className="vote-col">
             <button
-              className="upvote-btn"
+              className="vote-arrow"
               onClick={() => handleUpvote(post._id)}
+              aria-label="Upvote"
             >
-              ▲ {post.upvotes?.length || 0}
+              ▲
             </button>
-            {post.author?._id === userId && (
-              <button
-                className="upvote-btn"
-                onClick={() => handleDeletePost(post._id)}
-              >
-                Delete
-              </button>
-            )}
+            <span className="vote-count">{post.upvotes?.length || 0}</span>
           </div>
 
-          {post.verdict?.reasoning && (
-            <p className="dispatch-reasoning">{post.verdict.reasoning}</p>
-          )}
+          <div className="post-main">
+            <p className="post-byline">
+              {post.author?.username || "unknown"} ·{" "}
+              {new Date(post.createdAt).toLocaleDateString()}
+            </p>
+            <h2 className="post-title">{post.title}</h2>
+            <p className="post-body">{post.content}</p>
 
-          <CommentSection postId={post._id} currentUserId={userId} />
-        </article>
+            <div className="post-footer">
+              <VerdictStamp status={post.verdict?.status} />
+              {post.author?._id === userId && (
+                <button
+                  className="post-action-btn"
+                  onClick={() => handleDeletePost(post._id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+
+            {post.verdict?.reasoning && (
+              <p className="post-reasoning">{post.verdict.reasoning}</p>
+            )}
+
+            <CommentSection postId={post._id} currentUserId={userId} />
+          </div>
+
+          {post.imageUrl && (
+            <img src={post.imageUrl} alt="" className="post-thumb" />
+          )}
+        </div>
       ))}
     </div>
   );

@@ -24,7 +24,7 @@ export async function listPosts(req, res) {
 
 export async function createPost(req, res) {
   try {
-    const { title, content, sourceUrl, group } = req.body;
+    const { title, content, sourceUrl, imageUrl, group } = req.body;
     if (!title || !content || !group) {
       return res
         .status(400)
@@ -49,6 +49,7 @@ export async function createPost(req, res) {
       title,
       content,
       sourceUrl,
+      imageUrl,
       group,
       author: req.userId,
     });
