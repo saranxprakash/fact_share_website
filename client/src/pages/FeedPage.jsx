@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import api from "../api/client";
 import VerdictStamp from "../components/VerdictStamp";
 import CommentSection from "../components/CommentSection";
@@ -13,8 +13,6 @@ export default function FeedPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const username = localStorage.getItem("username");
   const userId = localStorage.getItem("userId");
 
   async function loadGroup() {
@@ -41,7 +39,7 @@ export default function FeedPage() {
 
   async function handleLeave() {
     await api.post(`/groups/${groupId}/leave`);
-    navigate("/groups");
+    window.location.href = "/groups";
   }
 
   async function handleSubmit(e) {
@@ -68,13 +66,6 @@ export default function FeedPage() {
     loadPosts();
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    navigate("/");
-  }
-
   const isMember = group?.members?.includes(userId);
 
   return (
@@ -86,15 +77,11 @@ export default function FeedPage() {
           </Link>
           <h1 className="feed-title">{group?.name || "Loading…"}</h1>
         </div>
-        <div className="feed-user">
-          {username}
-          <button onClick={handleLogout}>Log out</button>
-          {isMember && (
-            <button onClick={handleLeave} style={{ marginTop: 4 }}>
-              Leave community
-            </button>
-          )}
-        </div>
+        {isMember && (
+          <button className="upvote-btn" onClick={handleLeave}>
+            Leave community
+          </button>
+        )}
       </div>
 
       <div className="sort-toggle">

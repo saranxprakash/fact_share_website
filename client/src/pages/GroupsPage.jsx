@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../api/client";
 import "./GroupsPage.css";
 
@@ -8,8 +8,6 @@ export default function GroupsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const username = localStorage.getItem("username");
   const userId = localStorage.getItem("userId");
 
   async function loadGroups() {
@@ -39,23 +37,12 @@ export default function GroupsPage() {
     loadGroups();
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    navigate("/");
-  }
-
   return (
     <div className="groups-page">
       <div className="groups-header">
         <div>
           <h1 className="groups-title">Communities</h1>
           <p className="groups-subtitle">verified facts wire</p>
-        </div>
-        <div className="groups-user">
-          {username}
-          <button onClick={handleLogout}>Log out</button>
         </div>
       </div>
 

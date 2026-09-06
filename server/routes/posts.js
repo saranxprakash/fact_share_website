@@ -5,11 +5,13 @@ import {
   createPost,
   upvotePost,
   deletePost,
+  listMyPosts,
 } from "../controllers/postController.js";
 
 const router = express.Router();
 
 router.get("/", listPosts);
+router.get("/mine", requireAuth, listMyPosts);
 router.post("/", requireAuth, createPost);
 router.post("/:id/upvote", requireAuth, upvotePost);
 router.delete("/:id", requireAuth, deletePost);

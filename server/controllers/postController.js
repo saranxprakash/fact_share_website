@@ -84,6 +84,14 @@ export async function upvotePost(req, res) {
   res.json({ upvoteCount: post.upvotes.length });
 }
 
+export async function listMyPosts(req, res) {
+  const posts = await Post.find({ author: req.userId })
+    .populate("group", "name")
+    .sort({ createdAt: -1 })
+    .limit(50);
+  res.json(posts);
+}
+
 export async function deletePost(req, res) {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(404).json({ error: "Post not found" });
